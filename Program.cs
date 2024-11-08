@@ -5,7 +5,7 @@ namespace Words;
 
 public class Words
 {
-    private static Dictionary<string, int> wordLetters;
+    private static Dictionary<char, int> wordLetters = new Dictionary<char, int>();
     private static string word;
 
     private static string Player1;
@@ -15,18 +15,10 @@ public class Words
 
     public static void Main(string[] args)
     {
-        ReadWord();
+        CreateDictionary(ReadWord());
         PlayersNames();
 
-        for (int i = 0; i < 10; i++)
-        {
-            AddWord(Player1, "ckjad");
-            AddWord(Player2, "ckjad");
-        }
-
-        DisplayWords();
-
-        Console.WriteLine(word);
+        Process(Player1);
     }
 
     private static string ReadWord()
@@ -65,10 +57,59 @@ public class Words
         return true;
     }
 
+    private static void CreateDictionary(string word)
+    {
+        foreach (var letter in word)
+        {
+            if (wordLetters.ContainsKey(letter))
+            {
+                ++wordLetters[letter];
+            }
+            else
+            {
+                wordLetters.Add(letter, 1);
+            }
+            
+        }
+    }
+
+    private static bool CheckWordFromOriginLetters(string word)
+    {
+        Dictionary<char, int> freeLetters = new Dictionary<char, int>(wordLetters);
+
+        foreach (char letter in word)
+        {
+            if (freeLetters.ContainsKey(letter) && freeLetters[letter] > 0)
+            {
+                --freeLetters[letter];
+            }
+            else
+            {
+                ExceptionConsoleMessage("Слово содержит буквы не из исходного. Введите повторно.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool CheckWordIsUnic(string word)
+    {
+        if (!Player1Words.Contains(word) && !Player2Words.Contains(word))
+        {
+            return true;
+        }
+        else
+        {
+            ExceptionConsoleMessage("Слово уже было использовано одним из игроков. Введите повторно.");
+            return false;
+        }
+
+    }
+
     private static void ExceptionConsoleMessage(string message)
     {
         Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.BackgroundColor = ConsoleColor.White;
 
         Console.WriteLine(message);
 
@@ -102,15 +143,58 @@ public class Words
 
     private static void DisplayWords()
     {
-        Console.BackgroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine($"|{"Слова первого игрока".PadRight(30)}|{"Слова второго игрока".PadRight(30)}|");
-        Console.WriteLine(new string('-', 63));
+        DisplayConsoleMessage($"|{$"Слова игрока {Player1}".PadRight(30)}|{$"Слова игрока {Player2}".PadRight(30)}|");
+        DisplayConsoleMessage(new string('-', 63));
         for (int i = 0; i < Math.Max(Player1Words.Count, Player2Words.Count); i++)
         {
 
-            Console.WriteLine($"|{(i < Player1Words.Count ? Player1Words[i] : String.Empty ).PadRight(30)}|{(i < Player2Words.Count ? Player1Words[i] : String.Empty).PadRight(30)}|");
+            DisplayConsoleMessage($"|{(i < Player1Words.Count ? Player1Words[i] : String.Empty ).PadRight(30)}|{(i < Player2Words.Count ? Player1Words[i] : String.Empty).PadRight(30)}|");
         }
-        Console.WriteLine(new string('-', 63));
+        DisplayConsoleMessage(new string('-', 63));
         Console.WriteLine();
+    }
+
+    private static void DisplayConsoleMessage(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+
+        Console.WriteLine(message);
+
+        Console.ResetColor();
+    }
+
+    private static void Process(string player)
+    {
+        Console.WriteLine($"\nХод игрока {player}");
+
+        string playerWord;
+        int playerAttempts = 3;
+
+        do
+        {
+            playerWord = Console.ReadLine().ToLower();
+            if (CheckWordFromOriginLetters(playerWord) && CheckWordIsUnic(playerWord))
+            {
+                AddWord(player, playerWord);
+                DisplayConsoleMessage("Слово подходит!\n");
+                Process(player == Player1 ? Player2 : Player1);
+            }
+            else
+            {
+                ExceptionConsoleMessage($"Количество оставшихся попыток: {--playerAttempts}");
+            }
+
+        } while (playerAttempts > 0);
+
+        Finish(player == Player1 ? Player2 : Player1);
+    }
+
+    private static void Finish(string player)
+    {
+        DisplayConsoleMessage($"\nПобедитель {player}");
+
+        Console.WriteLine("Все найденные слова:\n");
+        DisplayWords();
+        return;
     }
 }
