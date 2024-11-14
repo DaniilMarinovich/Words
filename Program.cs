@@ -8,17 +8,19 @@ public class Words
     private static Dictionary<char, int> wordLetters = new Dictionary<char, int>();
     private static string word;
 
-    private static string Player1;
-    private static string Player2;
-    private static List<string> Player1Words = new List<string>();
-    private static List<string> Player2Words = new List<string>();
+    private static string player1;
+    private static string player2;
+    private static List<string> player1Words = new List<string>();
+    private static List<string> player2Words = new List<string>();
+
+    private const int MinLength = 8;
+    private const int MaxLength = 30;
 
     public static void Main(string[] args)
     {
         CreateDictionary(ReadWord());
         PlayersNames();
-
-        Process(Player1);
+        Process(player1);
     }
 
     private static string ReadWord()
@@ -34,11 +36,10 @@ public class Words
 
     private static bool CheckWordLength(string word)
     {
-        if (word.Length >= 8 && word.Length <= 30)
+        if (word.Length >= MinLength && word.Length <= MaxLength)
         {
             return true;
         }
-
         ExceptionConsoleMessage("Слово имеет неверную длинну. Введите повторно.");
         return false;
     }
@@ -50,6 +51,7 @@ public class Words
             if ((letter < 'а') || (letter > 'я'))
             {
                 ExceptionConsoleMessage("Слово содержит неверные символы. Введите повторно.");
+
                 return false;
             }
         }
@@ -69,7 +71,6 @@ public class Words
             {
                 wordLetters.Add(letter, 1);
             }
-            
         }
     }
 
@@ -86,6 +87,7 @@ public class Words
             else
             {
                 ExceptionConsoleMessage("Слово содержит буквы не из исходного. Введите повторно.");
+
                 return false;
             }
         }
@@ -95,7 +97,7 @@ public class Words
 
     private static bool CheckWordIsUnic(string word)
     {
-        if (!Player1Words.Contains(word) && !Player2Words.Contains(word))
+        if (!player1Words.Contains(word) && !player2Words.Contains(word))
         {
             return true;
         }
@@ -104,36 +106,33 @@ public class Words
             ExceptionConsoleMessage("Слово уже было использовано одним из игроков. Введите повторно.");
             return false;
         }
-
     }
 
     private static void ExceptionConsoleMessage(string message)
     {
         Console.ForegroundColor = ConsoleColor.DarkRed;
-
         Console.WriteLine(message);
-
         Console.ResetColor();
     }
 
     private static void PlayersNames()
     {
         Console.WriteLine("Введите имя первого игрока:");
-        Player1 = Console.ReadLine();
+        player1 = Console.ReadLine();
 
         Console.WriteLine("Введите имя второго игрока:");
-        Player2 = Console.ReadLine();
+        player2 = Console.ReadLine();
     }
 
     private static void AddWord(string player, string word)
     {
-        if (player == Player1)
+        if (player == player1)
         {
-            Player1Words.Add(word);
+            player1Words.Add(word);
         }
-        else if (player == Player2)
+        else if (player == player2)
         {
-            Player2Words.Add(word);
+            player2Words.Add(word);
         }
         else
         {
@@ -143,14 +142,13 @@ public class Words
 
     private static void DisplayWords()
     {
-        DisplayConsoleMessage($"|{$"Слова игрока {Player1}".PadRight(30)}|{$"Слова игрока {Player2}".PadRight(30)}|");
-        DisplayConsoleMessage(new string('-', 63));
-        for (int i = 0; i < Math.Max(Player1Words.Count, Player2Words.Count); i++)
+        DisplayConsoleMessage($"|{$"Слова игрока {player1}".PadRight(MaxLength)}|{$"Слова игрока {player2}".PadRight(MaxLength)}|");
+        DisplayConsoleMessage(new string('-', MaxLength*3 + 3));
+        for (int i = 0; i < Math.Max(player1Words.Count, player2Words.Count); i++)
         {
-
-            DisplayConsoleMessage($"|{(i < Player1Words.Count ? Player1Words[i] : String.Empty ).PadRight(30)}|{(i < Player2Words.Count ? Player1Words[i] : String.Empty).PadRight(30)}|");
+            DisplayConsoleMessage($"|{(i < player1Words.Count ? player1Words[i] : String.Empty ).PadRight(MaxLength)}|{(i < player2Words.Count ? player2Words[i] : String.Empty).PadRight(MaxLength)}|");
         }
-        DisplayConsoleMessage(new string('-', 63));
+        DisplayConsoleMessage(new string('-', MaxLength*3 + 3));
         Console.WriteLine();
     }
 
@@ -177,22 +175,20 @@ public class Words
             {
                 AddWord(player, playerWord);
                 DisplayConsoleMessage("Слово подходит!\n");
-                Process(player == Player1 ? Player2 : Player1);
+                Process(player == player1 ? player2 : player1);
             }
             else
             {
                 ExceptionConsoleMessage($"Количество оставшихся попыток: {--playerAttempts}");
             }
-
         } while (playerAttempts > 0);
 
-        Finish(player == Player1 ? Player2 : Player1);
+        Finish(player == player1 ? player2 : player1);
     }
 
     private static void Finish(string player)
     {
         DisplayConsoleMessage($"\nПобедитель {player}");
-
         Console.WriteLine("Все найденные слова:\n");
         DisplayWords();
         return;
