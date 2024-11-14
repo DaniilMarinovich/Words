@@ -19,8 +19,8 @@ public class Words
     public static void Main(string[] args)
     {
         CreateDictionary(ReadWord());
-        PlayersNames();
-        Process(player1);
+        InputPlayersNames();
+        GameProcess(player1);
     }
 
     private static string ReadWord()
@@ -74,7 +74,7 @@ public class Words
         }
     }
 
-    private static bool CheckWordFromOriginLetters(string word)
+    private static bool CheckWordFromOriginalLetters(string word)
     {
         Dictionary<char, int> freeLetters = new Dictionary<char, int>(wordLetters);
 
@@ -95,7 +95,7 @@ public class Words
         return true;
     }
 
-    private static bool CheckWordIsUnic(string word)
+    private static bool CheckWordUniqueness(string word)
     {
         if (!player1Words.Contains(word) && !player2Words.Contains(word))
         {
@@ -115,7 +115,7 @@ public class Words
         Console.ResetColor();
     }
 
-    private static void PlayersNames()
+    private static void InputPlayersNames()
     {
         Console.WriteLine("Введите имя первого игрока:");
         player1 = Console.ReadLine();
@@ -140,19 +140,19 @@ public class Words
         }
     }
 
-    private static void DisplayWords()
+    private static void WordsOutput()
     {
-        DisplayConsoleMessage($"|{$"Слова игрока {player1}".PadRight(MaxLength)}|{$"Слова игрока {player2}".PadRight(MaxLength)}|");
-        DisplayConsoleMessage(new string('-', MaxLength*3 + 3));
+        MarkupConsoleMessage($"|{$"Слова игрока {player1}".PadRight(MaxLength)}|{$"Слова игрока {player2}".PadRight(MaxLength)}|");
+        MarkupConsoleMessage(new string('-', MaxLength*3 + 3));
         for (int i = 0; i < Math.Max(player1Words.Count, player2Words.Count); i++)
         {
-            DisplayConsoleMessage($"|{(i < player1Words.Count ? player1Words[i] : String.Empty ).PadRight(MaxLength)}|{(i < player2Words.Count ? player2Words[i] : String.Empty).PadRight(MaxLength)}|");
+            MarkupConsoleMessage($"|{(i < player1Words.Count ? player1Words[i] : String.Empty ).PadRight(MaxLength)}|{(i < player2Words.Count ? player2Words[i] : String.Empty).PadRight(MaxLength)}|");
         }
-        DisplayConsoleMessage(new string('-', MaxLength*3 + 3));
+        MarkupConsoleMessage(new string('-', MaxLength*3 + 3));
         Console.WriteLine();
     }
 
-    private static void DisplayConsoleMessage(string message)
+    private static void MarkupConsoleMessage(string message)
     {
         Console.ForegroundColor = ConsoleColor.DarkGreen;
 
@@ -161,7 +161,7 @@ public class Words
         Console.ResetColor();
     }
 
-    private static void Process(string player)
+    private static void GameProcess(string player)
     {
         Console.WriteLine($"\nХод игрока {player}");
 
@@ -171,11 +171,11 @@ public class Words
         do
         {
             playerWord = Console.ReadLine().ToLower();
-            if (CheckWordFromOriginLetters(playerWord) && CheckWordIsUnic(playerWord))
+            if (CheckWordFromOriginalLetters(playerWord) && CheckWordUniqueness(playerWord))
             {
                 AddWord(player, playerWord);
-                DisplayConsoleMessage("Слово подходит!\n");
-                Process(player == player1 ? player2 : player1);
+                MarkupConsoleMessage("Слово подходит!\n");
+                GameProcess(player == player1 ? player2 : player1);
             }
             else
             {
@@ -183,14 +183,14 @@ public class Words
             }
         } while (playerAttempts > 0);
 
-        Finish(player == player1 ? player2 : player1);
+        GameProcessFinish(player == player1 ? player2 : player1);
     }
 
-    private static void Finish(string player)
+    private static void GameProcessFinish(string player)
     {
-        DisplayConsoleMessage($"\nПобедитель {player}");
+        MarkupConsoleMessage($"\nПобедитель {player}");
         Console.WriteLine("Все найденные слова:\n");
-        DisplayWords();
+        WordsOutput();
         return;
     }
 }
