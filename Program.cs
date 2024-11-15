@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Resources;
 using System.Timers;
 
 namespace Words;
 
 public class Words
 {
+    private static ResourceManager resourceManager;
+    private static CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
     private static Dictionary<char, int> wordLetters = new Dictionary<char, int>();
     private static string word;
+
+    private const int MinLength = 8;
+    private const int MaxLength = 30;
 
     private static string player1;
     private static string player2;
     private static List<string> player1Words = new List<string>();
     private static List<string> player2Words = new List<string>();
-
-    private const int MinLength = 8;
-    private const int MaxLength = 30;
 
     private static Timer timer;
     private static bool isTimerModeOn = false;
@@ -25,24 +30,23 @@ public class Words
 
     public static void Main(string[] args)
     {
+        resourceManager = new ResourceManager("Words.Resources.Messages", typeof(Words).Assembly);
         Menu();
         CreateDictionary(ReadWord());
         InputPlayersNames();
         GameProcess(player1);
     }
 
-    private static void Menu() 
+    private static void Menu()
     {
         while (true)
         {
-            Console.WriteLine("\nМеню:" +
-                "\n\t1. Выбор языка игры." +
-                "\n\t2. Выбор режима игры." +
-                "\n\t3. Начать игру.");
+            Console.WriteLine(GetMessage("menuHead"));
 
             switch(Console.ReadLine())
             {
                 case "1":
+                    SelectLanguage();
                     break;
                 case "2":
                     SelectTimer();
@@ -50,20 +54,45 @@ public class Words
                 case "3":
                     return;
                 default:
-                    ExceptionConsoleMessage("Неверный выбор. Повторите выбор.");
+                    ExceptionConsoleMessage(GetMessage("invalidChoiceMessage"));
                     break;
             }
         }
     }
 
+    private static void SelectLanguage()
+    {
+        Console.WriteLine(GetMessage("languageMenuHead"));
+
+        while (!isTimerModeOn)
+        {
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    SetLanguage(new CultureInfo("ru-RU"));
+                    return;
+                case "2":
+                    SetLanguage(new CultureInfo("en-US"));
+                    return;
+                case "3":
+                    return;
+                default:
+                    ExceptionConsoleMessage(GetMessage("invalidChoiceMessage"));
+                    break;
+            }
+        }
+    }
+
+    private static void SetLanguage(CultureInfo language)
+    {
+        currentCulture = language;
+        CultureInfo.CurrentCulture = language;
+        CultureInfo.CurrentUICulture = language;
+    }
+
     private static void SelectTimer()
     {
-        Console.WriteLine("Добро пожаловать в меню выбора таймера:" +
-            "\n\t1. 2 минуты." +
-            "\n\t2. 1 минута." +
-            "\n\t3. 30 секунд." +
-            "\n\t4. 10 секунд." +
-            "\n\t5. Продолжить без таймера.");
+        Console.WriteLine(GetMessage("timerMenuHead"));
 
         while (!isTimerModeOn)
         {
@@ -84,7 +113,7 @@ public class Words
                 case "5":
                     return;
                 default:
-                    ExceptionConsoleMessage("Неверный выбор. Повторите выбор.");
+                    ExceptionConsoleMessage(GetMessage("invalidChoiceMessage"));
                     break;
             }
         }
@@ -100,9 +129,9 @@ public class Words
     {
         do
         {
-            Console.WriteLine("\nВведите изначальное слово:");
+            Console.WriteLine(GetMessage("enterWordPrompt"));
             word = Console.ReadLine().ToLower();
-        } while (!CheckWordLength(word) || !CheckWordRussianLetters(word));
+        } while (!CheckWordLength(word) || !CheckWordLanguageOfLetters(word));
 
         return word;
     }
@@ -113,23 +142,35 @@ public class Words
         {
             return true;
         }
-        ExceptionConsoleMessage("Слово имеет неверную длинну. Введите повторно.");
+        ExceptionConsoleMessage(GetMessage("wordLengthError"));
+
         return false;
     }
 
-    private static bool CheckWordRussianLetters(string word)
+    private static bool CheckWordLanguageOfLetters(string word)
     {
         foreach (char letter in word)
         {
-            if ((letter < 'а') || (letter > 'я'))
+            if (CheckLetter(letter))
             {
-                ExceptionConsoleMessage("Слово содержит неверные символы. Введите повторно.");
+                ExceptionConsoleMessage(GetMessage("invalidCharactersError"));
 
                 return false;
             }
         }
 
         return true;
+    }
+
+    private static bool CheckLetter(char letter)
+    {
+        // Search, how do this as OOP
+        if (currentCulture.Name == "ru-RU")
+        {
+            return letter < 'а' || letter > 'я';
+        }
+
+        return letter < 'a' || letter > 'z';
     }
 
     private static void CreateDictionary(string word)
@@ -159,7 +200,7 @@ public class Words
             }
             else
             {
-                ExceptionConsoleMessage("Слово содержит буквы не из исходного. Введите повторно.");
+                ExceptionConsoleMessage(GetMessage("lettersFromOriginalError"));
 
                 return false;
             }
@@ -176,7 +217,7 @@ public class Words
         }
         else
         {
-            ExceptionConsoleMessage("Слово уже было использовано одним из игроков. Введите повторно.");
+            ExceptionConsoleMessage(GetMessage("wordUsedError"));
             return false;
         }
     }
@@ -190,10 +231,10 @@ public class Words
 
     private static void InputPlayersNames()
     {
-        Console.WriteLine("Введите имя первого игрока:");
+        Console.WriteLine(GetMessage("firstPlayerNamePrompt"));
         player1 = Console.ReadLine();
 
-        Console.WriteLine("Введите имя второго игрока:");
+        Console.WriteLine(GetMessage("secondPlayerNamePrompt"));
         player2 = Console.ReadLine();
     }
 
@@ -209,20 +250,22 @@ public class Words
         }
         else
         {
-            ExceptionConsoleMessage("Неверный игрок");
+            ExceptionConsoleMessage(GetMessage("invalidPlayerError"));
         }
     }
 
     private static void WordsOutput()
     {
-        MarkupConsoleMessage($"|{$"Слова игрока {player1}".PadRight(MaxLength)}|{$"Слова игрока {player2}".PadRight(MaxLength)}|");
-        MarkupConsoleMessage(new string('-', MaxLength*2 + 3));
+        MarkupConsoleMessage($"|{string.Format(GetMessage("playerWordsHeader"), player1).PadRight(MaxLength)}|{string.Format(GetMessage("playerWordsHeader"), player2).PadRight(MaxLength)}|");
+        MarkupConsoleMessage(new string('-', MaxLength * 2 + 3));
+
         for (int i = 0; i < Math.Max(player1Words.Count, player2Words.Count); i++)
         {
-            MarkupConsoleMessage($"|{(i < player1Words.Count ? player1Words[i] : String.Empty ).PadRight(MaxLength)}|{(i < player2Words.Count ? player2Words[i] : String.Empty).PadRight(MaxLength)}|");
+            MarkupConsoleMessage($"|{(i < player1Words.Count ? player1Words[i] : String.Empty).PadRight(MaxLength)}|{(i < player2Words.Count ? player2Words[i] : String.Empty).PadRight(MaxLength)}|");
         }
-        MarkupConsoleMessage($"|{$"Количество слов : {player1Words.Count}".PadRight(MaxLength)}|{$"Количество слов : {player2Words.Count}".PadRight(MaxLength)}|");
-        MarkupConsoleMessage(new string('-', MaxLength*2 + 3));
+
+        MarkupConsoleMessage($"|{string.Format(GetMessage("wordCountMessage"), player1Words.Count).PadRight(MaxLength)}|{string.Format(GetMessage("wordCountMessage"), player2Words.Count).PadRight(MaxLength)}|");
+        MarkupConsoleMessage(new string('-', MaxLength * 2 + 3));
         Console.WriteLine();
     }
 
@@ -244,21 +287,28 @@ public class Words
         timer.Start();
     }
 
-        private static void TimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            remainingTime--;
+    private static void TimerElapsed(object sender, ElapsedEventArgs e)
+    {
+        remainingTime--;
 
-            if (remainingTime <= 0)
-            {
-                isTimeUp = true;
-                timer.Stop();
-                Console.WriteLine("\nВремя вышло! Ход игрока завершен.");
-            }
+        if (remainingTime <= 0)
+        {
+            isTimeUp = true;
+            timer.Stop();
+            TimerConsoleMessage(GetMessage("timeUpMessage"));
         }
+    }
+
+    private static void TimerConsoleMessage(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine(message);
+        Console.ResetColor();
+    }
 
     private static void GameProcess(string player)
     {
-        Console.WriteLine($"\nХод игрока {player}");
+        Console.WriteLine($"\n{string.Format(GetMessage("playerTurn"), player)}");
 
         string playerWord;
         int playerAttempts = 3;
@@ -275,7 +325,7 @@ public class Words
                 if (CheckWordFromOriginalLetters(playerWord) && CheckWordUniqueness(playerWord))
                 {
                     AddWord(player, playerWord);
-                    MarkupConsoleMessage("Слово подходит!\n");
+                    MarkupConsoleMessage(GetMessage("rightWord"));
                     if (isTimerModeOn)
                     {
                         timer.Stop();
@@ -284,29 +334,24 @@ public class Words
                 }
                 else
                 {
-                    ExceptionConsoleMessage($"Количество оставшихся попыток: {--playerAttempts}");
+                    ExceptionConsoleMessage(string.Format(GetMessage("remainingAttemptsMessage"), --playerAttempts));
                 }
             }
         }
 
-        if (isTimerModeOn)
-        {
-            if(isTimeUp)
-            {
-                GameProcessFinish(player == player1 ? player2 : player1);
-            }
-        }
-        else
-        {
-            GameProcessFinish(player == player1 ? player2 : player1);
-        }
+        GameProcessFinish(player == player1 ? player2 : player1);
     }
 
     private static void GameProcessFinish(string player)
     {
-        MarkupConsoleMessage($"\nПобедитель {player}");
-        Console.WriteLine("Все найденные слова:\n");
+        MarkupConsoleMessage(string.Format(GetMessage("roundWinnerMessage"), player));
+        Console.WriteLine(GetMessage("allWords"));
         WordsOutput();
         return;
+    }
+
+    private static string GetMessage(string key)
+    {
+        return resourceManager.GetString(key, currentCulture);
     }
 }
