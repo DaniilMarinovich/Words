@@ -70,6 +70,15 @@ namespace Words.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Слово пусто или мало. Введите повторно..
+        /// </summary>
+        internal static string emptinessAbsenceWordError {
+            get {
+                return ResourceManager.GetString("emptinessAbsenceWordError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Введите изначальное слово:.
         /// </summary>
         internal static string enterWordPrompt {

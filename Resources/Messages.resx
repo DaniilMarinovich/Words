@@ -184,8 +184,11 @@
   </data>
   <data name="playerWordsHeader" xml:space="preserve">
     <value>Слова игрока {0}</value>
-</data>
-<data name="wordCountMessage" xml:space="preserve">
+  </data>
+  <data name="wordCountMessage" xml:space="preserve">
     <value>Количество слов: {0}</value>
-</data>
+  </data>
+  <data name="emptinessAbsenceWordError" xml:space="preserve">
+    <value>Слово пусто или мало. Введите повторно.</value>
+  </data>
 </root>

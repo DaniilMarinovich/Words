@@ -122,70 +122,73 @@
   1. Russian.
   2. English.
   3. Continue with the current.</value>
-</data>
-<data name="menuHead" xml:space="preserve">
+  </data>
+  <data name="menuHead" xml:space="preserve">
     <value>Menu: 
   1. Select game language.
   2. Select game mode.
   3. Start the game.</value>
-</data>
-<data name="timerMenuHead" xml:space="preserve">
+  </data>
+  <data name="timerMenuHead" xml:space="preserve">
     <value>Welcome to the timer selection menu:
   1. 2 minutes.
   2. 1 minute.
   3. 30 seconds.
   4. 10 seconds.
   5. Continue without a timer.</value>
-</data>
-<data name="invalidChoiceMessage" xml:space="preserve">
+  </data>
+  <data name="invalidChoiceMessage" xml:space="preserve">
     <value>Invalid choice. Please repeat your selection.</value>
-</data>
-<data name="enterWordPrompt" xml:space="preserve">
+  </data>
+  <data name="enterWordPrompt" xml:space="preserve">
     <value>Enter the initial word:</value>
-</data>
-<data name="wordLengthError" xml:space="preserve">
+  </data>
+  <data name="wordLengthError" xml:space="preserve">
     <value>The word has an invalid length. Please enter again.</value>
-</data>
-<data name="invalidCharactersError" xml:space="preserve">
+  </data>
+  <data name="invalidCharactersError" xml:space="preserve">
     <value>The word contains invalid characters. Please enter again.</value>
-</data>
-<data name="lettersFromOriginalError" xml:space="preserve">
+  </data>
+  <data name="lettersFromOriginalError" xml:space="preserve">
     <value>The word contains letters not from the original. Please enter again.</value>
-</data>
-<data name="wordUsedError" xml:space="preserve">
+  </data>
+  <data name="wordUsedError" xml:space="preserve">
     <value>The word has already been used by one of the players. Please enter again.</value>
-</data>
-<data name="invalidPlayerError" xml:space="preserve">
+  </data>
+  <data name="invalidPlayerError" xml:space="preserve">
     <value>Invalid player.</value>
-</data>
-<data name="firstPlayerNamePrompt" xml:space="preserve">
+  </data>
+  <data name="firstPlayerNamePrompt" xml:space="preserve">
     <value>Enter the name of the first player:</value>
-</data>
-<data name="secondPlayerNamePrompt" xml:space="preserve">
+  </data>
+  <data name="secondPlayerNamePrompt" xml:space="preserve">
     <value>Enter the name of the second player:</value>
-</data>
-<data name="roundWinnerMessage" xml:space="preserve">
+  </data>
+  <data name="roundWinnerMessage" xml:space="preserve">
     <value>Winner: {0}</value>
-</data>
-<data name="timeUpMessage" xml:space="preserve">
+  </data>
+  <data name="timeUpMessage" xml:space="preserve">
     <value>Time is up! The player's turn is over.</value>
-</data>
-<data name="remainingAttemptsMessage" xml:space="preserve">
+  </data>
+  <data name="remainingAttemptsMessage" xml:space="preserve">
     <value>Remaining attempts: {0}</value>
-</data>
-<data name="rightWord" xml:space="preserve">
+  </data>
+  <data name="rightWord" xml:space="preserve">
     <value>The word is correct!</value>
-</data>
-<data name="playerTurn" xml:space="preserve">
+  </data>
+  <data name="playerTurn" xml:space="preserve">
     <value>Player's turn: {0}</value>
-</data>
-<data name="allWords" xml:space="preserve">
+  </data>
+  <data name="allWords" xml:space="preserve">
     <value>All found words:</value>
-</data>
-<data name="playerWordsHeader" xml:space="preserve">
+  </data>
+  <data name="playerWordsHeader" xml:space="preserve">
     <value>Words of player {0}</value>
-</data>
-<data name="wordCountMessage" xml:space="preserve">
+  </data>
+  <data name="wordCountMessage" xml:space="preserve">
     <value>Number of words: {0}</value>
-</data>
+  </data>
+  <data name="emptinessAbsenceWordError" xml:space="preserve">
+    <value>The word is empty or small. Please enter again.</value>
+  </data>
 </root>

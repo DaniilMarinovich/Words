@@ -327,7 +327,11 @@ public class Words
             if (Console.KeyAvailable)
             {
                 playerWord = Console.ReadLine().ToLower();
-                if (CanWordBeConstructed(playerWord) && IsWordUnique(playerWord))
+                if (IsInputWord(playerWord))
+                { 
+                    ShowErrorMessage(GetLocalizedMessage("emptinessAbsenceWordError")); 
+                }
+                else if (CanWordBeConstructed(playerWord) && IsWordUnique(playerWord))
                 {
                     AddWord(player, playerWord);
                     HighlightConsoleMessage(GetLocalizedMessage("rightWord"));
