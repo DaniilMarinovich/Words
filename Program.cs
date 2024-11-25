@@ -31,17 +31,17 @@ public class Words
     public static void Main(string[] args)
     {
         resourceManager = new ResourceManager("Words.Resources.Messages", typeof(Words).Assembly);
-        Menu();
-        CreateDictionary(ReadWord());
+        ShowMainMenu();
+        CreateLetterFrequencyDictionary(ReadAndValidateWord());
         InputPlayersNames();
-        GameProcess(player1);
+        ExecutePlayerTurn(player1);
     }
 
-    private static void Menu()
+    private static void ShowMainMenu()
     {
         while (true)
         {
-            Console.WriteLine(GetMessage("menuHead"));
+            Console.WriteLine(GetLocalizedMessage("menuHead"));
 
             switch(Console.ReadLine())
             {
@@ -54,7 +54,7 @@ public class Words
                 case "3":
                     return;
                 default:
-                    ExceptionConsoleMessage(GetMessage("invalidChoiceMessage"));
+                    ShowErrorMessage(GetLocalizedMessage("invalidChoiceMessage"));
                     break;
             }
         }
@@ -62,28 +62,28 @@ public class Words
 
     private static void SelectLanguage()
     {
-        Console.WriteLine(GetMessage("languageMenuHead"));
+        Console.WriteLine(GetLocalizedMessage("languageMenuHead"));
 
         while (!isTimerModeOn)
         {
             switch (Console.ReadLine())
             {
                 case "1":
-                    SetLanguage(new CultureInfo("ru-RU"));
+                    SetApplicationCulture(new CultureInfo("ru-RU"));
                     return;
                 case "2":
-                    SetLanguage(new CultureInfo("en-US"));
+                    SetApplicationCulture(new CultureInfo("en-US"));
                     return;
                 case "3":
                     return;
                 default:
-                    ExceptionConsoleMessage(GetMessage("invalidChoiceMessage"));
+                    ShowErrorMessage(GetLocalizedMessage("invalidChoiceMessage"));
                     break;
             }
         }
     }
 
-    private static void SetLanguage(CultureInfo language)
+    private static void SetApplicationCulture(CultureInfo language)
     {
         currentCulture = language;
         CultureInfo.CurrentCulture = language;
@@ -92,68 +92,68 @@ public class Words
 
     private static void SelectTimer()
     {
-        Console.WriteLine(GetMessage("timerMenuHead"));
+        Console.WriteLine(GetLocalizedMessage("timerMenuHead"));
 
         while (!isTimerModeOn)
         {
             switch (Console.ReadLine())
             {
                 case "1":
-                    SetTimer(120);
+                    SetTurnTimer(120);
                     return;
                 case "2":
-                    SetTimer(60);
+                    SetTurnTimer(60);
                     return;
                 case "3":
-                    SetTimer(30);
+                    SetTurnTimer(30);
                     return;
                 case "4":
-                    SetTimer(10);
+                    SetTurnTimer(10);
                     return;
                 case "5":
                     return;
                 default:
-                    ExceptionConsoleMessage(GetMessage("invalidChoiceMessage"));
+                    ShowErrorMessage(GetLocalizedMessage("invalidChoiceMessage"));
                     break;
             }
         }
     }
 
-    private static void SetTimer(int time)
+    private static void SetTurnTimer(int time)
     {
         isTimerModeOn = true;
         turnTime = time;
     }
 
-    private static string ReadWord()
+    private static string ReadAndValidateWord()
     {
         do
         {
-            Console.WriteLine(GetMessage("enterWordPrompt"));
+            Console.WriteLine(GetLocalizedMessage("enterWordPrompt"));
             word = Console.ReadLine().ToLower();
-        } while (!CheckWordLength(word) || !CheckWordLanguageOfLetters(word));
+        } while (!IsWordLengthValid(word) || !IsWordLanguageConsistent(word));
 
         return word;
     }
 
-    private static bool CheckWordLength(string word)
+    private static bool IsWordLengthValid(string word)
     {
         if (word.Length >= MinLength && word.Length <= MaxLength)
         {
             return true;
         }
-        ExceptionConsoleMessage(GetMessage("wordLengthError"));
+        ShowErrorMessage(GetLocalizedMessage("wordLengthError"));
 
         return false;
     }
 
-    private static bool CheckWordLanguageOfLetters(string word)
+    private static bool IsWordLanguageConsistent(string word)
     {
         foreach (char letter in word)
         {
-            if (CheckLetter(letter))
+            if (IsLetterValidForLanguage(letter))
             {
-                ExceptionConsoleMessage(GetMessage("invalidCharactersError"));
+                ShowErrorMessage(GetLocalizedMessage("invalidCharactersError"));
 
                 return false;
             }
@@ -162,7 +162,7 @@ public class Words
         return true;
     }
 
-    private static bool CheckLetter(char letter)
+    private static bool IsLetterValidForLanguage(char letter)
     {
         // Search, how do this as OOP
         if (currentCulture.Name == "ru-RU")
@@ -173,7 +173,7 @@ public class Words
         return letter < 'a' || letter > 'z';
     }
 
-    private static void CreateDictionary(string word)
+    private static void CreateLetterFrequencyDictionary(string word)
     {
         foreach (var letter in word)
         {
@@ -188,7 +188,7 @@ public class Words
         }
     }
 
-    private static bool CheckWordFromOriginalLetters(string word)
+    private static bool CanWordBeConstructed(string word)
     {
         Dictionary<char, int> freeLetters = new Dictionary<char, int>(wordLetters);
 
@@ -200,7 +200,7 @@ public class Words
             }
             else
             {
-                ExceptionConsoleMessage(GetMessage("lettersFromOriginalError"));
+                ShowErrorMessage(GetLocalizedMessage("lettersFromOriginalError"));
 
                 return false;
             }
@@ -209,7 +209,12 @@ public class Words
         return true;
     }
 
-    private static bool CheckWordUniqueness(string word)
+    private static bool IsInputWord(string word)
+    {
+        return word.Length >= 2 || String.IsNullOrEmpty(word);
+    }
+
+    private static bool IsWordUnique(string word)
     {
         if (!player1Words.Contains(word) && !player2Words.Contains(word))
         {
@@ -217,12 +222,12 @@ public class Words
         }
         else
         {
-            ExceptionConsoleMessage(GetMessage("wordUsedError"));
+            ShowErrorMessage(GetLocalizedMessage("wordUsedError"));
             return false;
         }
     }
 
-    private static void ExceptionConsoleMessage(string message)
+    private static void ShowErrorMessage(string message)
     {
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine(message);
@@ -231,10 +236,10 @@ public class Words
 
     private static void InputPlayersNames()
     {
-        Console.WriteLine(GetMessage("firstPlayerNamePrompt"));
+        Console.WriteLine(GetLocalizedMessage("firstPlayerNamePrompt"));
         player1 = Console.ReadLine();
 
-        Console.WriteLine(GetMessage("secondPlayerNamePrompt"));
+        Console.WriteLine(GetLocalizedMessage("secondPlayerNamePrompt"));
         player2 = Console.ReadLine();
     }
 
@@ -250,26 +255,26 @@ public class Words
         }
         else
         {
-            ExceptionConsoleMessage(GetMessage("invalidPlayerError"));
+            ShowErrorMessage(GetLocalizedMessage("invalidPlayerError"));
         }
     }
 
-    private static void WordsOutput()
+    private static void DisplayPlayerWords()
     {
-        MarkupConsoleMessage($"|{string.Format(GetMessage("playerWordsHeader"), player1).PadRight(MaxLength)}|{string.Format(GetMessage("playerWordsHeader"), player2).PadRight(MaxLength)}|");
-        MarkupConsoleMessage(new string('-', MaxLength * 2 + 3));
+        HighlightConsoleMessage($"|{string.Format(GetLocalizedMessage("playerWordsHeader"), player1).PadRight(MaxLength)}|{string.Format(GetLocalizedMessage("playerWordsHeader"), player2).PadRight(MaxLength)}|");
+        HighlightConsoleMessage(new string('-', MaxLength * 2 + 3));
 
         for (int i = 0; i < Math.Max(player1Words.Count, player2Words.Count); i++)
         {
-            MarkupConsoleMessage($"|{(i < player1Words.Count ? player1Words[i] : String.Empty).PadRight(MaxLength)}|{(i < player2Words.Count ? player2Words[i] : String.Empty).PadRight(MaxLength)}|");
+            HighlightConsoleMessage($"|{(i < player1Words.Count ? player1Words[i] : String.Empty).PadRight(MaxLength)}|{(i < player2Words.Count ? player2Words[i] : String.Empty).PadRight(MaxLength)}|");
         }
 
-        MarkupConsoleMessage($"|{string.Format(GetMessage("wordCountMessage"), player1Words.Count).PadRight(MaxLength)}|{string.Format(GetMessage("wordCountMessage"), player2Words.Count).PadRight(MaxLength)}|");
-        MarkupConsoleMessage(new string('-', MaxLength * 2 + 3));
+        HighlightConsoleMessage($"|{string.Format(GetLocalizedMessage("wordCountMessage"), player1Words.Count).PadRight(MaxLength)}|{string.Format(GetLocalizedMessage("wordCountMessage"), player2Words.Count).PadRight(MaxLength)}|");
+        HighlightConsoleMessage(new string('-', MaxLength * 2 + 3));
         Console.WriteLine();
     }
 
-    private static void MarkupConsoleMessage(string message)
+    private static void HighlightConsoleMessage(string message)
     {
         Console.ForegroundColor = ConsoleColor.DarkGreen;
 
@@ -278,7 +283,7 @@ public class Words
         Console.ResetColor();
     }
 
-    private static void StartTimer()
+    private static void StartTurnTimer()
     {
         remainingTime = turnTime;
         isTimeUp = false;
@@ -295,7 +300,7 @@ public class Words
         {
             isTimeUp = true;
             timer.Stop();
-            TimerConsoleMessage(GetMessage("timeUpMessage"));
+            TimerConsoleMessage(GetLocalizedMessage("timeUpMessage"));
         }
     }
 
@@ -306,15 +311,15 @@ public class Words
         Console.ResetColor();
     }
 
-    private static void GameProcess(string player)
+    private static void ExecutePlayerTurn(string player)
     {
-        Console.WriteLine($"\n{string.Format(GetMessage("playerTurn"), player)}");
+        Console.WriteLine($"\n{string.Format(GetLocalizedMessage("playerTurn"), player)}");
 
         string playerWord;
         int playerAttempts = 3;
         if(isTimerModeOn)
         {
-            StartTimer();
+            StartTurnTimer();
         }
 
         while (playerAttempts > 0 && !isTimeUp)
@@ -322,35 +327,35 @@ public class Words
             if (Console.KeyAvailable)
             {
                 playerWord = Console.ReadLine().ToLower();
-                if (CheckWordFromOriginalLetters(playerWord) && CheckWordUniqueness(playerWord))
+                if (CanWordBeConstructed(playerWord) && IsWordUnique(playerWord))
                 {
                     AddWord(player, playerWord);
-                    MarkupConsoleMessage(GetMessage("rightWord"));
+                    HighlightConsoleMessage(GetLocalizedMessage("rightWord"));
                     if (isTimerModeOn)
                     {
                         timer.Stop();
                     }
-                    GameProcess(player == player1 ? player2 : player1);
+                    ExecutePlayerTurn(player == player1 ? player2 : player1);
                 }
                 else
                 {
-                    ExceptionConsoleMessage(string.Format(GetMessage("remainingAttemptsMessage"), --playerAttempts));
+                    ShowErrorMessage(string.Format(GetLocalizedMessage("remainingAttemptsMessage"), --playerAttempts));
                 }
             }
         }
 
-        GameProcessFinish(player == player1 ? player2 : player1);
+        EndGameRound(player == player1 ? player2 : player1);
     }
 
-    private static void GameProcessFinish(string player)
+    private static void EndGameRound(string player)
     {
-        MarkupConsoleMessage(string.Format(GetMessage("roundWinnerMessage"), player));
-        Console.WriteLine(GetMessage("allWords"));
-        WordsOutput();
+        HighlightConsoleMessage(string.Format(GetLocalizedMessage("roundWinnerMessage"), player));
+        Console.WriteLine(GetLocalizedMessage("allWords"));
+        DisplayPlayerWords();
         return;
     }
 
-    private static string GetMessage(string key)
+    private static string GetLocalizedMessage(string key)
     {
         return resourceManager.GetString(key, currentCulture);
     }

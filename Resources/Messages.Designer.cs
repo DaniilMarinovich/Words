@@ -61,11 +61,29 @@ namespace Words.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Все найденные слова:.
+        /// </summary>
+        internal static string allWords {
+            get {
+                return ResourceManager.GetString("allWords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Введите изначальное слово:.
         /// </summary>
         internal static string enterWordPrompt {
             get {
                 return ResourceManager.GetString("enterWordPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Введите имя первого игрока:.
+        /// </summary>
+        internal static string firstPlayerNamePrompt {
+            get {
+                return ResourceManager.GetString("firstPlayerNamePrompt", resourceCulture);
             }
         }
         
@@ -130,11 +148,20 @@ namespace Words.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Введите имя первого игрока:.
+        ///   Looks up a localized string similar to Ход игрока {0}.
         /// </summary>
-        internal static string playerNamePrompt {
+        internal static string playerTurn {
             get {
-                return ResourceManager.GetString("playerNamePrompt", resourceCulture);
+                return ResourceManager.GetString("playerTurn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Слова игрока {0}.
+        /// </summary>
+        internal static string playerWordsHeader {
+            get {
+                return ResourceManager.GetString("playerWordsHeader", resourceCulture);
             }
         }
         
@@ -144,6 +171,15 @@ namespace Words.Resources {
         internal static string remainingAttemptsMessage {
             get {
                 return ResourceManager.GetString("remainingAttemptsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Слово подходит!.
+        /// </summary>
+        internal static string rightWord {
+            get {
+                return ResourceManager.GetString("rightWord", resourceCulture);
             }
         }
         
@@ -185,6 +221,15 @@ namespace Words.Resources {
         internal static string timeUpMessage {
             get {
                 return ResourceManager.GetString("timeUpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Количество слов: {0}.
+        /// </summary>
+        internal static string wordCountMessage {
+            get {
+                return ResourceManager.GetString("wordCountMessage", resourceCulture);
             }
         }
         
