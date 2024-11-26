@@ -125,13 +125,13 @@ public class Words
         turnTime = time;
     }
 
-    private static string ReadAndValidateWord()
+    private static string ReadWord()
     {
         do
         {
             Console.WriteLine(GetLocalizedMessage("enterWordPrompt"));
             word = Console.ReadLine().ToLower();
-        } while (!IsWordLengthValid(word) || !IsWordLanguageConsistent(word));
+        } while (ValidateWord(word));
 
         return word;
     }
@@ -160,6 +160,11 @@ public class Words
         }
 
         return true;
+    }
+
+    private static bool ValidateWord(string word)
+    {
+        return !IsWordLengthValid(word) || !IsWordLanguageConsistent(word);
     }
 
     private static bool IsLetterValidForLanguage(char letter)
