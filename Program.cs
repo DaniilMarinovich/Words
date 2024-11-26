@@ -32,7 +32,7 @@ public class Words
     {
         resourceManager = new ResourceManager("Words.Resources.Messages", typeof(Words).Assembly);
         ShowMainMenu();
-        CreateLetterFrequencyDictionary(ReadAndValidateWord());
+        CreateLetterFrequencyDictionary(ReadWord());
         InputPlayersNames();
         ExecutePlayerTurn(player1);
     }
@@ -216,7 +216,7 @@ public class Words
 
     private static bool IsInputWord(string word)
     {
-        return word.Length >= 2 || String.IsNullOrEmpty(word);
+        return word.Length < 2 || String.IsNullOrEmpty(word);
     }
 
     private static bool IsWordUnique(string word)
@@ -327,7 +327,7 @@ public class Words
             StartTurnTimer();
         }
 
-        while (playerAttempts > 0 && !isTimeUp)
+        while (IsRoundEnd(playerAttempts))
         {
             if (Console.KeyAvailable)
             {
@@ -344,7 +344,12 @@ public class Words
                     {
                         timer.Stop();
                     }
-                    ExecutePlayerTurn(player == player1 ? player2 : player1);
+
+                    if (IsRoundEnd(playerAttempts))
+                    {
+                        ExecutePlayerTurn(player == player1 ? player2 : player1);
+                        return;
+                    }
                 }
                 else
                 {
@@ -354,6 +359,11 @@ public class Words
         }
 
         EndGameRound(player == player1 ? player2 : player1);
+    }
+
+    private static bool IsRoundEnd(int attempts)
+    {
+        return attempts > 0 && !isTimeUp;
     }
 
     private static void EndGameRound(string player)
