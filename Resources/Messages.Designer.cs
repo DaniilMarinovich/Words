@@ -216,7 +216,7 @@ namespace Words.Resources {
         ///  2. 1 минута.
         ///  3. 30 секунд.
         ///  4. 10 секунд.
-        ///  5. Продолжить без таймера..
+        ///  0. Продолжить без таймера..
         /// </summary>
         internal static string timerMenuHead {
             get {

@@ -135,7 +135,7 @@
   2. 1 minute.
   3. 30 seconds.
   4. 10 seconds.
-  5. Continue without a timer.</value>
+  0. Continue without a timer.</value>
   </data>
   <data name="invalidChoiceMessage" xml:space="preserve">
     <value>Invalid choice. Please repeat your selection.</value>

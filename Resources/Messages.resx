@@ -135,7 +135,7 @@
   2. 1 минута.
   3. 30 секунд.
   4. 10 секунд.
-  5. Продолжить без таймера.</value>
+  0. Продолжить без таймера.</value>
   </data>
   <data name="invalidChoiceMessage" xml:space="preserve">
     <value>Неверный выбор. Повторите выбор.</value>
