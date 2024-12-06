@@ -6,6 +6,7 @@ using System;
 using Words.Models;
 using Words.Views;
 using System.Threading;
+using System.Numerics;
 
 namespace Words.Controllers;
 
@@ -13,11 +14,15 @@ public class GameController
 {
     private readonly Game _game;
     private readonly GameView _gameView;
+    private readonly ScoreView _scoreView;
 
-    public GameController(Game game, GameView gameView)
+    private Player currentPlayer;
+
+    public GameController(Game game, GameView gameView, ScoreView scoreView)
     {
         _game = game;
         _gameView = gameView;
+        _scoreView = scoreView;
     }
 
     public void StartGame()
@@ -115,6 +120,7 @@ public class GameController
     private void ExecutePlayerTurn(Player player)
     {
         _gameView.ShowMessage("playerTurn", player.Name);
+        currentPlayer = player;
 
         string playerWord;
         int playerAttempts = 3;
@@ -128,7 +134,23 @@ public class GameController
             if (Console.KeyAvailable)
             {
                 playerWord = _gameView.GetInput().ToLower();
-                if (_game.IsInputWord(playerWord))
+                if (_game.IsWordCommand(playerWord))
+                {
+                    switch (playerWord) 
+                    {
+                        case "/show-words":
+                            _gameView.DisplayPlayerWords(_game.Player1, _game.Player2, Game.MaxLength);
+                            break;
+                        case "/score":
+                            _gameView.ShowMessage("currentPlayersScore", $"{_game.Player1.Name}: {_scoreView.GetScore(_game.Player1.Name)} - {_game.Player2.Name}: {_scoreView.GetScore(_game.Player2.Name)}", ConsoleColor.DarkGreen);
+                            break;
+                        case "/total-score":
+                            _gameView.ShowMessage("allScores", _scoreView.GetAllScores(), ConsoleColor.DarkGreen);
+                            break;
+                    }
+
+                }
+                else if (_game.IsInputWord(playerWord))
                 {
                     _gameView.ShowMessage("emptinessAbsenceWordError");
                 }
@@ -157,11 +179,21 @@ public class GameController
         EndGameRound(player == _game.Player1 ? _game.Player2 : _game.Player1);
     }
 
+    public void OnApplicationExit(object? sender, EventArgs e)
+    {
+        if (currentPlayer != null)
+        {
+            _scoreView.AddWin((currentPlayer == _game.Player1 ? _game.Player2 : _game.Player1).Name);
+        }
+    }
+
     private void EndGameRound(Player player)
     {
         _gameView.ShowMessage("roundWinnerMessage", player.Name, ConsoleColor.DarkGreen);
         _gameView.ShowMessage("allWords");
+        _scoreView.AddWin(player.Name);
         _gameView.DisplayPlayerWords(_game.Player1, _game.Player2, Game.MaxLength);
+        currentPlayer = null;
         return;
     }
 }

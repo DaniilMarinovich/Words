@@ -191,4 +191,10 @@
   <data name="emptinessAbsenceWordError" xml:space="preserve">
     <value>Слово пусто или мало. Введите повторно.</value>
   </data>
+  <data name="allScores" xml:space="preserve">
+    <value>Счёт всех игроков: {0}</value>
+  </data>
+  <data name="currentPlayersScore" xml:space="preserve">
+    <value>Ваш счёт: {0}</value>
+  </data>
 </root>

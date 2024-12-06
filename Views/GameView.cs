@@ -37,29 +37,6 @@ public class GameView
         return Console.ReadLine();
     }
 
-    public void ShowErrorMessag(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.DarkRed;
-        Console.WriteLine(message);
-        Console.ResetColor();
-    }
-
-    public void HighlightMessag(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.DarkGreen;
-
-        Console.WriteLine(message);
-
-        Console.ResetColor();
-    }
-
-    private void TimerConsoleMessag(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine(message);
-        Console.ResetColor();
-    }
-
     public void ShowMessage(string message, ConsoleColor color = ConsoleColor.White)
     {
         Console.ForegroundColor = color;

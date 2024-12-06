@@ -13,14 +13,18 @@ public class Words
 {
     public static void Main(string[] args)
     {
-        var view = new GameView();
+        var gameView = new GameView();
+        var scoreView = new ScoreView("score.json");
 
-        var player1 = new Player(view.GetInput("firstPlayerNamePrompt"));
-        var player2 = new Player(view.GetInput("secondPlayerNamePrompt"));
+        var player1 = new Player(gameView.GetInput("firstPlayerNamePrompt"));
+        var player2 = new Player(gameView.GetInput("secondPlayerNamePrompt"));
 
-        var game = new Game(player1, player2, view.ShowMessage);
-        var controller = new GameController(game, view);
+        var game = new Game(player1, player2, gameView.ShowMessage);
+        var controller = new GameController(game, gameView, scoreView);
+
+        AppDomain.CurrentDomain.ProcessExit += controller.OnApplicationExit;
 
         controller.StartGame();
+
     }
 }

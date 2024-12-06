@@ -61,11 +61,29 @@ namespace Words.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Счёт всех игроков: {0}.
+        /// </summary>
+        internal static string allScores {
+            get {
+                return ResourceManager.GetString("allScores", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Все найденные слова:.
         /// </summary>
         internal static string allWords {
             get {
                 return ResourceManager.GetString("allWords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ваш счёт: {0}.
+        /// </summary>
+        internal static string currentPlayersScore {
+            get {
+                return ResourceManager.GetString("currentPlayersScore", resourceCulture);
             }
         }
         

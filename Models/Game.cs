@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Timers;
@@ -99,6 +100,16 @@ public class Game
     public void StopTimer()
     {
         timer.Stop();
+    }
+
+    public bool IsWordCommand(string word)
+    {
+        return word.StartsWith("/");
+    }
+
+    public void StartTimer()
+    {
+        timer.Start();
     }
 
     public bool IsWordLengthValid(string word)

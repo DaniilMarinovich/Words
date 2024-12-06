@@ -191,4 +191,10 @@
   <data name="emptinessAbsenceWordError" xml:space="preserve">
     <value>The word is empty or small. Please enter again.</value>
   </data>
+  <data name="allScores" xml:space="preserve">
+    <value>Score of all players: {0}</value>
+  </data>
+  <data name="currentPlayersScore" xml:space="preserve">
+    <value>Your score: {0}</value>
+  </data>
 </root>
