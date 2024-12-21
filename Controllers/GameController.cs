@@ -1,28 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
-using System.Resources;
-using System.Timers;
-using System;
 using Words.Models;
 using Words.Views;
-using System.Threading;
-using System.Numerics;
 
 namespace Words.Controllers;
 
 public class GameController
 {
     private readonly Game _game;
-    private readonly GameView _gameView;
+    private readonly GameConsoleView _gameView;
     private readonly ScoreView _scoreView;
+    private readonly TurnTimer _timer;
 
     private Player currentPlayer;
 
-    public GameController(Game game, GameView gameView, ScoreView scoreView)
+    public GameController(Game game, GameConsoleView gameView, ScoreView scoreView, TurnTimer timer)
     {
         _game = game;
         _gameView = gameView;
         _scoreView = scoreView;
+        _timer = timer;
     }
 
     public void StartGame()
@@ -87,16 +84,16 @@ public class GameController
             switch (_gameView.GetInput())
             {
                 case "1":
-                    _game.SetTurnTimer(120);
+                    _timer.SetTurnTimer(120);
                     return;
                 case "2":
-                    _game.SetTurnTimer(60);
+                    _timer.SetTurnTimer(60);
                     return;
                 case "3":
-                    _game.SetTurnTimer(30);
+                    _timer.SetTurnTimer(30);
                     return;
                 case "4":
-                    _game.SetTurnTimer(10);
+                    _timer.SetTurnTimer(10);
                     return;
                 case "0":
                     return;
@@ -124,9 +121,9 @@ public class GameController
 
         string playerWord;
         int playerAttempts = 3;
-        if (_game.IsTimerModeOn)
+        if (_timer.IsTimerModeOn)
         {
-            _game.StartTurnTimer();
+            _timer.StartTurnTimer();
         }
 
         while (_game.IsRoundEnd(playerAttempts))
@@ -150,7 +147,7 @@ public class GameController
                     }
 
                 }
-                else if (_game.IsInputWord(playerWord))
+                else if (Validator.IsInputWord(playerWord))
                 {
                     _gameView.ShowMessage("emptinessAbsenceWordError");
                 }
@@ -158,9 +155,9 @@ public class GameController
                 {
                     player.AddWord(playerWord);
                     _gameView.ShowMessage("rightWord");
-                    if (_game.IsTimerModeOn)
+                    if (_timer.IsTimerModeOn)
                     {
-                        _game.StopTimer();
+                        _timer.StopTimer();
                     }
 
                     if (_game.IsRoundEnd(playerAttempts))

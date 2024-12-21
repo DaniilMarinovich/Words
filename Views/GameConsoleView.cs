@@ -5,12 +5,12 @@ using Words.Models;
 
 namespace Words.Views;
 
-public class GameView
+public class GameConsoleView
 {
     private ResourceManager resourceManager;
     private CultureInfo currentCulture = CultureInfo.CurrentCulture;
 
-    public GameView()
+    public GameConsoleView()
     {
         resourceManager = new ResourceManager("Words.Resources.Messages", typeof(Words).Assembly);
     }

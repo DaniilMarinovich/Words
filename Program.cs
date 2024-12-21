@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Resources;
-using System.Timers;
 using Words.Controllers;
 using Words.Models;
 using Words.Views;
@@ -13,18 +9,20 @@ public class Words
 {
     public static void Main(string[] args)
     {
-        var gameView = new GameView();
+        var gameView = new GameConsoleView();
         var scoreView = new ScoreView("score.json");
 
         var player1 = new Player(gameView.GetInput("firstPlayerNamePrompt"));
         var player2 = new Player(gameView.GetInput("secondPlayerNamePrompt"));
 
+        var turnTimer = new TurnTimer(gameView.ShowMessage);
+        Validator.SetErrorHandler(gameView.ShowMessage);
+
         var game = new Game(player1, player2, gameView.ShowMessage);
-        var controller = new GameController(game, gameView, scoreView);
+        var controller = new GameController(game, gameView, scoreView, turnTimer);
 
         AppDomain.CurrentDomain.ProcessExit += controller.OnApplicationExit;
 
         controller.StartGame();
-
     }
 }

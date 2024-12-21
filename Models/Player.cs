@@ -10,7 +10,7 @@ public class Player
     public Player(string name) 
     {
         Name = name;
-        Words = new List<string>();
+        Words = [];
     }
 
     public void AddWord(string word)
