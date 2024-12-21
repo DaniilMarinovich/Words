@@ -27,7 +27,7 @@ public class GameConsoleView
         return resourceManager.GetString(key, currentCulture);
     }
 
-    public string GetInput(string message = "")
+    public string? GetInput(string message = "")
     {
         if (!string.IsNullOrEmpty(message))
         {

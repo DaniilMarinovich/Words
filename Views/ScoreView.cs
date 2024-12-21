@@ -22,7 +22,7 @@ namespace Words.Views
         public int GetScore(string player)
         {
             var scores = LoadScores();
-            return scores.ContainsKey(player) ? scores[player] : 0;
+            return scores.TryGetValue(player, out int value) ? value : 0;
         }
 
         public string GetAllScores()
@@ -34,9 +34,9 @@ namespace Words.Views
         {
             var scores = LoadScores();
 
-            if (scores.ContainsKey(player))
+            if (scores.TryGetValue(player, out int value))
             {
-                ++scores[player];
+                scores[player] = ++value;
             }
             else
             {
@@ -49,7 +49,7 @@ namespace Words.Views
         private Dictionary<string, int> LoadScores()
         {
             var json = File.ReadAllText(_filePath);
-            return JsonSerializer.Deserialize<Dictionary<string, int>>(json) ?? new Dictionary<string, int>();
+            return JsonSerializer.Deserialize<Dictionary<string, int>>(json) ?? [];
         }
 
         private void SaveScores(Dictionary<string, int> scores)

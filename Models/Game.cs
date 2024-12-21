@@ -6,7 +6,7 @@ namespace Words.Models;
 public class Game
 {
     public string OriginalWord { get; set; }
-    private Dictionary<char, int> LetterFrequencies;
+    private readonly Dictionary<char, int> LetterFrequencies;
 
     public Player Player1 { get; private set; }
     public Player Player2 { get; private set; }
@@ -22,7 +22,7 @@ public class Game
         Player1 = player1;
         Player2 = player2;
         _errorHandler = errorHandler;
-        LetterFrequencies =  new Dictionary<char, int>();
+        LetterFrequencies =  [];
     }
 
     public void CreateLetterFrequencyDictionary(string word)
@@ -40,7 +40,7 @@ public class Game
         }
     }
 
-    public bool IsWordCommand(string word)
+    public static bool IsWordCommand(string word)
     {
         return word.StartsWith("/");
     }
@@ -56,9 +56,9 @@ public class Game
 
         foreach (char letter in word)
         {
-            if (freeLetters.ContainsKey(letter) && freeLetters[letter] > 0)
+            if (freeLetters.TryGetValue(letter, out int value) && value > 0)
             {
-                --freeLetters[letter];
+                freeLetters[letter] = --value;
             }
             else
             {
@@ -82,7 +82,7 @@ public class Game
         }
     }
 
-    public bool IsRoundEnd(int attempts)
+    public static bool IsRoundEnd(int attempts)
     {
         return attempts > 0 && !TurnTimer.isTimeUp;
     }

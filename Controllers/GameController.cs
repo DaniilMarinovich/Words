@@ -12,7 +12,7 @@ public class GameController
     private readonly ScoreView _scoreView;
     private readonly TurnTimer _timer;
 
-    private Player currentPlayer;
+    private Player? currentPlayer;
 
     public GameController(Game game, GameConsoleView gameView, ScoreView scoreView, TurnTimer timer)
     {
@@ -126,12 +126,12 @@ public class GameController
             _timer.StartTurnTimer();
         }
 
-        while (_game.IsRoundEnd(playerAttempts))
+        while (Game.IsRoundEnd(playerAttempts))
         {
             if (Console.KeyAvailable)
             {
                 playerWord = _gameView.GetInput().ToLower();
-                if (_game.IsWordCommand(playerWord))
+                if (Game.IsWordCommand(playerWord))
                 {
                     switch (playerWord) 
                     {
@@ -160,7 +160,7 @@ public class GameController
                         _timer.StopTimer();
                     }
 
-                    if (_game.IsRoundEnd(playerAttempts))
+                    if (Game.IsRoundEnd(playerAttempts))
                     {
                         ExecutePlayerTurn(player == _game.Player1? _game.Player2 : _game.Player1);
                         return;
